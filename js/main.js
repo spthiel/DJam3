@@ -1,33 +1,36 @@
 
-const types = {"ROAD": 0, "HOUSE": 1, "OFFICE":2};
+const types = {"ROAD": 0, "HOUSE": 1, "OFFICE":2, "DEBUG": 3};
+var gamestates;
 const dirs = [{"dx":1,"dy":0},{"dx":0,"dy":1},{"dx":-1,"dy":0},{"dx":0,"dy":-1}];
 
 var grid;
-var level = 2;
+var level = 1;
 var cars = [];
 var cellwidth;
 var selectedCar = null;
 var updateTiles = [];
 
 function setup() {
+    gamestates = {
+        "GAME": new StateGame()
+    };
+    gamestate = gamestates.GAME;
     createCanvas(windowWidth, windowHeight);
     grid = new Grid();
     cellwidth = Math.min(windowWidth/grid.width | 0, windowHeight/grid.height | 0)
     grid.position(windowWidth, windowHeight);
+    maxMailbox = Math.max(grid.width, grid.height)*40;
     background(0)
     tick();
 }
 
 var updateAll = true;
+var gamestate = new Gamestate();
 
 function draw() {
-    noStroke();
-    translate(grid.x, grid.y);
-    grid.draw(updateAll);
-    updateTiles = [];
-    updateAll = false;
-    cars.forEach(car => car.drawPath());
-    cars.forEach(car => car.draw());
+    push()
+        gamestate.draw();
+    pop()
 }
 
 function requestUpdate(x, y) {
@@ -40,17 +43,11 @@ function tick() {
 }
 
 function update() {
-    if(cars.length == 0) {
-        spawnCars();
-    }
-    cars.forEach(car => car.update());
+    gamestate.update();
 }
 
-function spawnCars() {
-    for(let i = 0; i < level; i++) {
-        cars.push(new Car(grid.office.x, grid.office.y, 15));
-    }
-}
+
+var spans = [];
 
 function shadowPoint(r, g, b, x, y, size) {
     push();
@@ -68,29 +65,12 @@ document.addEventListener("click",onClick);
 document.addEventListener("contextmenu", onRightClick, false);
 
 function onClick(e) {
-    let x = (e.x - grid.x) / cellwidth;
-    let y = (e.y - grid.y) / cellwidth;
-
-    if(x < 0 || y < 0 || x > grid.width || y > grid.width) {
-        return;
-    }
-
-    let car = cars.find(car => car.isHere(x, y));
-    if(car) {
-        if(selectedCar) {
-            selectedCar.selected = false;
-        }
-        car.selected = true;
-        selectedCar = car;
-    } else if(selectedCar) {
-        selectedCar.findPath(x | 0, y | 0);
-    }
+    gamestate.onClick(e);
 }
 
 function onRightClick(e) {
+    gamestate.onRightClick(e);
     e.preventDefault();
-    selectedCar.selected = false;
-    selectedCar = null;
     return false;
 } 
 
@@ -100,4 +80,5 @@ function windowResized() {
     grid.position(windowWidth, windowHeight);
     background(0)
     updateAll = true;
+    maxMailbox = Math.max(grid.width, grid.height)*40;
 }

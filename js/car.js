@@ -11,6 +11,7 @@ class Car {
         this.size = size;
         this.path = [];
         this.selected = false;
+        this.occupies = false;
     }
 
     isHere(x, y) {
@@ -19,7 +20,19 @@ class Car {
 
     update() {
         if(this.path.length == 0) {
+            let cell = grid.get(this.x, this.y);
+            if(cell.mailbox > 0) {
+                grid.occupie(this.x, this.y);
+                this.occupies = true;
+            }
             return;
+        }
+        if(this.occupies) {
+            grid.free(this.x, this.y);
+        }
+        let cell = grid.get(this.path[0].x, this.path[0].y);
+        if(cell.mailbox > 0) {
+            cell.mailbox--;
         }
         if(!this.last) {
             this.last = this.path[this.path.length-1];
@@ -44,7 +57,7 @@ class Car {
         }
         push(); 
             stroke(0,0,255);
-            strokeWeight(2);
+            strokeWeight(cellwidth/10);
             noFill();
             let last = {"x":this.x + this.dx,"y":this.y + this.dy};
             for(let i = this.path.length-1; i >= 0; i--) {
@@ -61,7 +74,7 @@ class Car {
 
     draw() {
         requestUpdate(this.x, this.y);
-        shadowPoint(this.selected ? 255 : 0,0, this.selected ? 0 : 255, (this.x + this.dx)*cellwidth + cellwidth/2, (this.y + this.dy)*cellwidth + cellwidth/2, this.size);
+        shadowPoint(this.selected ? 255 : 0,0, this.selected ? 0 : 255, (this.x + this.dx)*cellwidth + cellwidth/2, (this.y + this.dy)*cellwidth + cellwidth/2, cellwidth/3*2);
     }
 
     findInArrays(x, y, done, queue) {
@@ -86,8 +99,7 @@ class Car {
         }
         let first = true;
         while(queue.length != 0) {
-            let element = queue[0];
-            queue = queue.slice(1);
+            let element = queue.shift();
             if(element.x == x && element.y == y) {
                 this.path = this.traceBack(element,done);
                 return true;
@@ -96,18 +108,23 @@ class Car {
                 // Out of bounds
                 continue;
             }
-            if(grid.typeOf(element.x, element.y) == types.HOUSE && !first) {
+            if(!first && grid.typeOf(element.x, element.y) == types.HOUSE) {
                 // Can only drive on roads
                 continue;
             }
-            first = false;
             for(let i = 0; i < dirs.length; i++) {
                 let nx = element.x + dirs[i].dx;
                 let ny = element.y + dirs[i].dy;
-                if(!this.findInArrays(nx, ny, done, queue)) {
+                if(nx < 0 || nx >= grid.width || ny < 0 || ny >= grid.height) {
+                    if(nx != x || ny != y) {
+                        continue;
+                    }
+                }
+                if(!this.findInArrays(nx, ny, done, queue) && !(first && grid.typeOf(nx, ny) == types.HOUSE)) {
                     queue.push({"x":nx,"y":ny, "dir":dirs[i]});
                 }
             }
+            first = false;
             done.push(element);
         }
         return false;

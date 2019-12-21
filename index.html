@@ -2,12 +2,17 @@
     <head>
         <title>DJam3</title>
         <script type="text/javascript" src="lib/p5.min.js"> </script>
-        <script type="text/javascript" src="mapping/map.js"> </script>
         <script type="text/javascript" src="js/grid.js"> </script>
         <script type="text/javascript" src="js/car.js"> </script>
+        <script type="text/javascript" src="js/gamestates.js"> </script>
         <script type="text/javascript" src="js/main.js"> </script>
         <link rel="stylesheet" type="text/css" href="css/style.css">
     </head>
     <body style="margin:0;overflow:hidden;">
+        <div id="floatingText">
+            <div>Orders to complete: <span id="toComplete"></span></div>
+            <div>Orders completed: <span id="completed"></span></div>
+            <div>Orders failed: <span id="failed"></span></div>
+        </div>
     </body>
 </html>

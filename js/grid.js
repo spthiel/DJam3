@@ -13,7 +13,7 @@ class Grid {
         this.finishedRequests = 0;
         this.failedRequests = 0;
         this.startedRequests = 0;
-        this.totalRequests = level*1;
+        this.totalRequests = level*20;
         this.requestCooldown = 0;
         this.generate();
     }
@@ -28,7 +28,7 @@ class Grid {
         this.finishedRequests = 0;
         this.failedRequests = 0;
         this.startedRequests = 0;
-        this.totalRequests = level*1;
+        this.totalRequests = level*20;
         this.requestCooldown = 0;
         updateTiles = [];
     }

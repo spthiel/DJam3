@@ -120,7 +120,7 @@ class Car {
                 }
                 if(!this.findInArrays(nx, ny, done, queue)) {
                     if(first && grid.typeOf(nx,ny) == types.HOUSE) {
-                        if(nx != x || ny != y) {
+                        if(grid.typeOf(element.x, element.y) != types.ROAD) {
                             continue;
                         }
                     }

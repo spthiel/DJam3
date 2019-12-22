@@ -20,7 +20,9 @@ class StateGame extends Gamestate {
         grid.draw(updateAll);
         updateAll = false;
         cars.forEach(car => car.drawPath());
-        cars.forEach(car => car.draw());
+        for(let i = cars.length-1; i >= 0; i--) {
+            cars[i].draw();
+        }
         this.setTextsVisible();
         this.updateTexts();
     }

@@ -116,11 +116,14 @@ class Car {
                 let nx = element.x + dirs[i].dx;
                 let ny = element.y + dirs[i].dy;
                 if(nx < 0 || nx >= grid.width || ny < 0 || ny >= grid.height) {
-                    if(nx != x || ny != y) {
-                        continue;
-                    }
+                    continue;
                 }
-                if(!this.findInArrays(nx, ny, done, queue) && !(first && grid.typeOf(nx, ny) == types.HOUSE)) {
+                if(!this.findInArrays(nx, ny, done, queue)) {
+                    if(first && grid.typeOf(nx,ny) == types.HOUSE) {
+                        if(nx != x || ny != y) {
+                            continue;
+                        }
+                    }
                     queue.push({"x":nx,"y":ny, "dir":dirs[i]});
                 }
             }

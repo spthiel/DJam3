@@ -1,10 +1,26 @@
-#floatingText {
+#floatingText,
+#floatingTextLevel,
+#floatingTextHelp {
     position: absolute;
-    top: 0;
-    left: 0;
     color: white;
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+#floatingText {
+    top: 2;
+    left: 2;
+}
+
+#floatingTextLevel {
+    bottom: 2;
+    left: 2;
+}
+
+#floatingTextHelp {
+    top: 2;
+    right: 2;
+    text-align: right;
 }
 
 .hide {

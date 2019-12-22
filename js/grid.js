@@ -5,32 +5,24 @@ class Grid {
         this.height = 9;
         this.grid = [];
         this.office = {"x":-1,"y":-1};
-        this.freeHouses = [];
-        this.occupiedHouses = [];
         this.attemps = 0;
         this.chance = 3;
-        this.requests = level;
-        this.finishedRequests = 0;
-        this.failedRequests = 0;
-        this.startedRequests = 0;
-        this.totalRequests = level*20;
-        this.requestCooldown = 0;
-        this.generate();
+        this.regenerate();
     }
 
     regenerate() {
         this.freeHouses = [];
         this.occupiedHouses = [];
         cars = [];
-        this.generate();
         updateAll = true;
         this.requests = level;
         this.finishedRequests = 0;
         this.failedRequests = 0;
         this.startedRequests = 0;
-        this.totalRequests = level*20;
+        this.totalRequests = level*10;
         this.requestCooldown = 0;
         updateTiles = [];
+        this.generate();
     }
 
     generate() {
@@ -187,12 +179,7 @@ class Grid {
             updateTiles.forEach(tile => {
                 push();
                     stroke(20);
-                    try {
                     this.grid[tile.x][tile.y].draw(cellwidth*tile.x, cellwidth*tile.y, cellwidth, cellwidth);
-                    } catch {
-                        console.log(tile.x, tile.y)
-                        throw "Meh"
-                    }
                 pop();
             });
             updateTiles = [];
@@ -260,7 +247,7 @@ class Cell {
             requestUpdate(this.x, this.y);
             if(this.mailbox > maxMailbox) {
                 this.mailbox = -1;
-                grid.request();
+                grid.requests++;
                 grid.failedRequests++;
             }
         }

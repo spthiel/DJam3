@@ -47,8 +47,6 @@ function update() {
 }
 
 
-var spans = [];
-
 function shadowPoint(r, g, b, x, y, size) {
     push();
         for(let i = size; i > 0; i--) {

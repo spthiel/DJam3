@@ -9,6 +9,11 @@ class Gamestate {
 
 class StateGame extends Gamestate {
     
+    constructor() {
+        super();
+        this.spans = [];
+    }
+
     draw() {
         noStroke();
         translate(grid.x, grid.y);
@@ -16,11 +21,12 @@ class StateGame extends Gamestate {
         updateAll = false;
         cars.forEach(car => car.drawPath());
         cars.forEach(car => car.draw());
+        this.setTextsVisible();
         this.updateTexts();
     }
     
     spawnCars() {
-        for(let i = 0; i < level; i++) {
+        for(let i = cars.length; i < level/2; i++) {
             let car = new Car(grid.office.x, grid.office.y)
             if(i == 0) {
                 car.selected = true;
@@ -34,6 +40,8 @@ class StateGame extends Gamestate {
         this.updateText(0, "toComplete", grid.totalRequests-grid.finishedRequests-grid.failedRequests);
         this.updateText(1, "completed", grid.finishedRequests);
         this.updateText(2, "failed", grid.failedRequests);
+        this.updateText(3, "cars", cars.length);
+        this.updateText(4, "level", level);
     }
 
     setTextsVisible() {
@@ -44,11 +52,11 @@ class StateGame extends Gamestate {
     }
 
     updateText(idx, id, value) {
-        let e = spans[idx];
+        let e = this.spans[idx];
         if(!e) {
             e = document.getElementById(id);
             if(e) {
-                spans[idx] = e;
+                this.spans[idx] = e;
             }
         }
         if(e) {
@@ -57,7 +65,7 @@ class StateGame extends Gamestate {
     }
 
     update() {
-        if(cars.length == 0) {
+        if(cars.length < level/2) {
             this.spawnCars();
         }
         cars.forEach(car => car.update());
@@ -150,7 +158,7 @@ class StateRetry extends Gamestate {
 
     constructor() {
         super();
-        this.retry = new Button(windowWidth/2, windowHeight/2, windowWidth/2, windowHeight/5, 10, "You failed too many requests");
+        this.retry = new Button(windowWidth/2, windowHeight/2, windowWidth/2, windowHeight/8, 10, "You failed too many requests (Click to retry)");
     }
 
     draw() {
@@ -198,7 +206,7 @@ class Button {
         noStroke();
         fill(this.fontcolor);
         textSize(this.height/6 | 0);
-        text(this.text, this.x - this.width/2, this.y - this.height/2, this.width, this.height, this.borderradius);
+        text(this.text, this.x - this.width/2, this.y - this.height/2, this.width, this.height);
     }
 
     onClick(x, y) {
